@@ -10,25 +10,41 @@
     line-height: 140%;
     color: #333;
   }
+  a {
+    text-decoration: none;
+    color: #666;
+  }
+  a:hover,
+  a:active {
+    color: #333;
+  }
   dt {
     font-weight: bold;
   }
   dd {
-    margin: 0;
+    margin: 0 0 20px 0;
+    border-bottom: 1px solid #ccc;
+  }
+  dd:last-child {
+    border-width: 0;
   }
   header {
     text-align: center;
   }
   .listing {
     text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
   }
   img {
     display: inline-block;
     max-width: 400px;
   }
+  figcaption {
 
+  }
   @media (max-width: 400px) {
-    img {
+    .listing {
       max-width: 100%;
     }
   }
@@ -43,18 +59,29 @@
   <section class="listing">
 
     <dl>
+
+      <dt>Day 2</dt>
+      <dt>(Sun, Jun 22)</dt>
+      <dd>
+        <a href="2014-06-22/">
+          <figure>
+            <img src="2014-06-22/capture.mov.gif">
+            <figcaption>HTML5 Canvas animations</figcaption>
+          </figure>
+        </a>
+      </dd>
+
       <dt>Day 1</dt>
       <dt>(Sat, Jun 21)</dt>
       <dd>
         <a href="2014-06-21/">
-          <img src="2014-06-21/html5-canvas-paintings.png">
           <p>HTML5 Canvas shapes</p>
+          <img src="2014-06-21/html5-canvas-paintings.png">
         </a>
       </dd>
     </dl>
 
   </section>
     
-<!--  -->
 </body>
 </html>

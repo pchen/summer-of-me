@@ -1,0 +1,16 @@
+body {
+  font-family: 'Arial';
+  line-height: 140%;
+}
+.instructions {
+  text-align: center;
+}
+canvas {
+  display: block;
+  margin: 20px auto;
+  outline: 1px solid #ccc;
+}
+.reflections {
+  width: 400px;
+  margin: 20px auto;
+}
