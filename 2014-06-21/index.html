@@ -1,109 +1,126 @@
 <!doctype html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Day 1</title>
   <style>
+  body {
+    font-family: 'Arial';
+    line-height: 140%;
+  }
+  .instructions {
+    text-align: center;
+  }
   canvas {
     display: block;
     margin: 20px auto;
     outline: 1px solid #ccc;
   }
-  p {
-    text-align: center;
-    font-family: 'Arial';
+  .reflections {
+    width: 400px;
+    margin: 20px auto;
   }
   </style>
 </head>
 <body>
-  <p>Refresh browser to see a new canvas painting</p>
-  <canvas id="shapes" width="400" height="400"></canvas>
-  <script>
-  (function(){
+  <section class="experiment">
+    <p class="instructions">Refresh browser to see a new canvas painting</p>
+    <canvas id="shapes" width="400" height="400"></canvas>
+    <script>
+    (function(){
 
-    var canvas = document.getElementById('shapes'), 
-        ctx = canvas.getContext('2d'),
-        canvasWidth = canvas.width,
-        canvasHeight = canvas.height;
+      var canvas = document.getElementById('shapes'), 
+          ctx = canvas.getContext('2d'),
+          canvasWidth = canvas.width,
+          canvasHeight = canvas.height;
 
-    var shapes = ['rectangle', 'arrow', 'circle'],
-        numShapes = shapes.length,
-        shapesToDraw = 10,
-        arrowDirections = ['left','right','up','down'],
-        minWidth = 30,
-        maxWidth = canvasWidth/2,
-        minHeight = 30,
-        maxHeight = canvasHeight/4,
-        i = 0;
+      var shapes = ['rectangle', 'arrow', 'circle'],
+          numShapes = shapes.length,
+          shapesToDraw = 10,
+          arrowDirections = ['left','right','up','down'],
+          minWidth = 30,
+          maxWidth = canvasWidth/2,
+          minHeight = 30,
+          maxHeight = canvasHeight/4,
+          i = 0;
 
-    for (i=0; i<shapesToDraw; i++){
-      var r = Math.floor( Math.random() * 255 ),
-          g = 100, //Math.floor( Math.random() * 255 ),
-          b = 100, //Math.floor( Math.random() * 255 ),
-          a = 0.5, //Math.floor( Math.random() * 100 )/100,
-          color = 'rgba('+r+','+g+','+b+','+a+')';
-      
-      var x = Math.floor( Math.random() * canvasWidth ),
-          y = Math.floor( Math.random() * canvasHeight ),
-          w = Math.floor( Math.random() * maxWidth ) + minWidth,
-          h = Math.floor( Math.random() * maxHeight ) + minHeight;
+      for (i=0; i<shapesToDraw; i++){
+        var r = Math.floor( Math.random() * 255 ),
+            g = 100, //Math.floor( Math.random() * 255 ),
+            b = 100, //Math.floor( Math.random() * 255 ),
+            a = 0.5, //Math.floor( Math.random() * 100 )/100,
+            color = 'rgba('+r+','+g+','+b+','+a+')';
+        
+        var x = Math.floor( Math.random() * canvasWidth ),
+            y = Math.floor( Math.random() * canvasHeight ),
+            w = Math.floor( Math.random() * maxWidth ) + minWidth,
+            h = Math.floor( Math.random() * maxHeight ) + minHeight;
 
-      var shape = shapes[ Math.floor( Math.random() * numShapes )];
-      switch (shape) {
-        case 'rectangle':
-          drawRectangle(x, y, w, h, color);      
-          break;
-        case 'circle':
-          drawCircle(x, y, w/2, color);
-          break;
-        case 'arrow':
-          var direction = arrowDirections[Math.floor( Math.random() * arrowDirections.length )]
-          drawArrow(x, y, w, h, color, direction);
-          break;
+        var shape = shapes[ Math.floor( Math.random() * numShapes )];
+        switch (shape) {
+          case 'rectangle':
+            drawRectangle(x, y, w, h, color);      
+            break;
+          case 'circle':
+            drawCircle(x, y, w/2, color);
+            break;
+          case 'arrow':
+            var direction = arrowDirections[Math.floor( Math.random() * arrowDirections.length )]
+            drawArrow(x, y, w, h, color, direction);
+            break;
+        }
+
       }
 
-    }
+      function drawRectangle(x, y, w, h, color){
+        ctx.fillStyle = color;
+        ctx.fillRect (x, y, w, h);
+      }
 
-    function drawRectangle(x, y, w, h, color){
-      ctx.fillStyle = color;
-      ctx.fillRect (x, y, w, h);
-    }
-
-    function drawArrow(x, y, w, h, color, direction){
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(x,y);
-      switch (direction) {
-        case 'left':
-          ctx.lineTo(x+w,y+(h/2));
-          ctx.lineTo(x,y+h);
-          break;
-        case 'right':
-          ctx.lineTo(x-w,y+(h/2));
-          ctx.lineTo(x,y+h);
-          break;
-        case 'down':
-          ctx.lineTo(x+(w/2),y+h);
-          ctx.lineTo(x+w,y);
-          break;
-        case 'up':
-        default:
-           ctx.lineTo(x+(w/2),y-h);
+      function drawArrow(x, y, w, h, color, direction){
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x,y);
+        switch (direction) {
+          case 'left':
+            ctx.lineTo(x+w,y+(h/2));
+            ctx.lineTo(x,y+h);
+            break;
+          case 'right':
+            ctx.lineTo(x-w,y+(h/2));
+            ctx.lineTo(x,y+h);
+            break;
+          case 'down':
+            ctx.lineTo(x+(w/2),y+h);
             ctx.lineTo(x+w,y);
-          break;
+            break;
+          case 'up':
+          default:
+             ctx.lineTo(x+(w/2),y-h);
+              ctx.lineTo(x+w,y);
+            break;
+        }
+        ctx.closePath;
+        ctx.fill();
       }
-      ctx.closePath;
-      ctx.fill();
-    }
 
-    function drawCircle(x, y, radius, color){
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI*2, true);
-      ctx.closePath();
-      ctx.fill();
-    }
+      function drawCircle(x, y, radius, color){
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI*2, true);
+        ctx.closePath();
+        ctx.fill();
+      }
 
-  }());
-  </script>
+    }());
+    </script>
+  </section>
+  <section class="reflections">
+    <h2>Day 1</h2>
+    <p>30 minutes was surprisingly very little time to whip up an experiment. I actually had much more ambitious plans. This was my first time doing anything in HTML5 canvas and it took me an hour before I was happy enough with the results to walk away.</p>
+    <p>I think I’ll learn something this summer about choosing what is worthwhile pursuing... and what can be left behind.</p>
+    <p>- Pearl</p>
+  </section>
 </body>
 </html>
