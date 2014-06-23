@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 3</title>
+  <link href="../styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <section class="experiment">
+    <p class="instructions">Move your mouse around in the box</p>
+    <canvas id="dot-holder" width="400" height="400"></canvas>
+    <script>
+    (function(){
+      window.requestAnimationFrame = window.requestAnimationFrame
+                                      || window.mozRequestAnimationFrame
+                                      || window.webkitRequestAnimationFrame 
+                                      || window.msRequestAnimationFrame;
+
+      window.cancelAnimationFrame = window.cancelAnimationFrame
+                                      || window.mozCancelAnimationFrame
+                                      || window.webkitCancelAnimationFrame 
+                                      || window.msCancelAnimationFrame;
+
+      var canvas = document.getElementById('dot-holder'), 
+          ctx = canvas.getContext('2d'),
+          canvasWidth = canvas.width,
+          canvasHeight = canvas.height;
+
+      var mouse = { x:0, y:0 },
+          target = { x:canvasWidth/2, y:canvasHeight/2 },
+          dot = { x: canvasWidth/2,
+                  y: canvasHeight/2,
+                  r: 10,
+                  color: 'rgb(0,0,0)',
+                  getMaxX: function(){
+                    return canvasWidth + dot.r / 2;
+                  },
+                  getMaxY: function(){
+                    return canvasHeight + dot.r / 2;
+                  }
+                };
+
+      var animationId,
+          mouseDebounce;
+      
+      function mouseMove(mouseevent) {
+
+        // get mouse position after HTML element offset
+        mouse.x = mouseevent.pageX - canvas.offsetLeft;
+        mouse.y = mouseevent.pageY - canvas.offsetTop;
+        
+        // set new target but constraint to canvas dimensions
+        target.x = Math.max(0, Math.min(dot.getMaxX(), mouse.x));
+        target.y = Math.max(0, Math.min(dot.getMaxY(), mouse.y));
+
+        clearTimeout(mouseDebounce);
+        mouseDebounce = setTimeout(startDraw,16);
+      }
+
+      function startDraw(){
+        // console.log('startDraw');
+        animationId = requestAnimationFrame(draw);
+      }
+
+      function draw() {
+
+        var deltaX = target.x - dot.x,
+            deltaY = target.y - dot.y;
+
+        var inertia = 0.25;
+        // sometimes the dot never makes it to the mouse pointer...
+        var snapDistance = 3, // adjust distance if inertia changes
+            snapToMouse = ( Math.abs(deltaX) <= snapDistance 
+                              && Math.abs(deltaY) <= snapDistance );
+
+        dot.x += Math.floor( deltaX * inertia );
+        dot.y += Math.floor( deltaY * inertia );
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        drawCircle(dot.x, dot.y, dot.r, dot.color);
+
+        if ( snapToMouse ) {
+          cancelAnimationFrame(animationId);
+        }
+        else {
+          // Instead of immediately calling:
+          // animationId = requestAnimationFrame(draw);
+          // Use setTimeout to slow down animation frame rate
+          clearTimeout(mouseDebounce);
+          mouseDebounce = setTimeout(startDraw,50);
+        }
+      }
+
+      function drawCircle(x, y, radius, color){
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI*2, true);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // kick off animation
+      startDraw();
+      window.onmousemove = mouseMove;
+
+    }());
+    </script>
+  </section>
+  <section class="reflections">
+    <h2>Day 3</h2>
+    <p>Improvements to yesterday's animation. Seems silly to have to combine setTimeout() with requestAnimationFrame() but...</p>
+    <p>Also: now with moar dots!</p>
+    <p>- Pearl</p>
+  </section>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-246174-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
+</html>
