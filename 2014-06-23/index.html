@@ -10,6 +10,7 @@
   <section class="experiment">
     <p class="instructions">Move your mouse around in the box</p>
     <canvas id="dot-holder" width="400" height="400"></canvas>
+    <script src="dot.js"></script>
     <script>
     (function(){
       window.requestAnimationFrame = window.requestAnimationFrame
@@ -27,22 +28,12 @@
           canvasWidth = canvas.width,
           canvasHeight = canvas.height;
 
-      var mouse = { x:0, y:0 },
-          target = { x:canvasWidth/2, y:canvasHeight/2 },
-          dot = { x: canvasWidth/2,
-                  y: canvasHeight/2,
-                  r: 10,
-                  color: 'rgb(0,0,0)',
-                  getMaxX: function(){
-                    return canvasWidth + dot.r / 2;
-                  },
-                  getMaxY: function(){
-                    return canvasHeight + dot.r / 2;
-                  }
-                };
+      var mouse = { x:0, y:0 };
 
       var animationId,
           mouseDebounce;
+
+      var dots = [];
       
       function mouseMove(mouseevent) {
 
@@ -50,37 +41,34 @@
         mouse.x = mouseevent.pageX - canvas.offsetLeft;
         mouse.y = mouseevent.pageY - canvas.offsetTop;
         
-        // set new target but constraint to canvas dimensions
-        target.x = Math.max(0, Math.min(dot.getMaxX(), mouse.x));
-        target.y = Math.max(0, Math.min(dot.getMaxY(), mouse.y));
+        // set new target
+        for (var i=0; i<dots.length; i++) {
+          dots[i].setTargetXY( mouse.x, mouse.y );
+        }
 
         clearTimeout(mouseDebounce);
         mouseDebounce = setTimeout(startDraw,16);
       }
 
       function startDraw(){
-        // console.log('startDraw');
         animationId = requestAnimationFrame(draw);
       }
 
       function draw() {
 
-        var deltaX = target.x - dot.x,
-            deltaY = target.y - dot.y;
-
-        var inertia = 0.25;
-        // sometimes the dot never makes it to the mouse pointer...
-        var snapDistance = 3, // adjust distance if inertia changes
-            snapToMouse = ( Math.abs(deltaX) <= snapDistance 
-                              && Math.abs(deltaY) <= snapDistance );
-
-        dot.x += Math.floor( deltaX * inertia );
-        dot.y += Math.floor( deltaY * inertia );
-
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        drawCircle(dot.x, dot.y, dot.r, dot.color);
 
-        if ( snapToMouse ) {
+        var targetReached = 0,
+            i = 0;
+        
+        for (i=0; i<dots.length; i++){
+          var stopDrawing = dots[i].draw(ctx);
+          if ( stopDrawing ) {
+            targetReached++;
+          }
+        }
+        
+        if ( targetReached === dots.length ) {
           cancelAnimationFrame(animationId);
         }
         else {
@@ -92,15 +80,51 @@
         }
       }
 
-      function drawCircle(x, y, radius, color){
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI*2, true);
-        ctx.closePath();
-        ctx.fill();
-      }
+      // create 1st (red) dot
+      var dot1 = new Dot();
+      dot1.init({ x: 20, 
+                  y: 20,
+                  radius: 10, 
+                  color: 'rgba(255,0,0,0.5)', 
+                  inertia: 0.1,
+                  snapDistance: 30 //9
+                }, canvas );
+      dots.push( dot1 );
 
-      // kick off animation
+      // create 2nd (green) dot
+      var dot2 = new Dot();
+      dot2.init({ x: canvasWidth - 20, 
+                  y: 20,
+                  radius: 10, 
+                  color: 'rgba(0,255,0,0.5)', 
+                  inertia: 0.15,
+                  snapDistance: 30 //8
+                }, canvas );
+      dots.push( dot2 );
+
+      // create 3rd (blue) dot
+      var dot3 = new Dot();
+      dot3.init({ x: canvasWidth - 20, 
+                  y: canvasHeight - 20,
+                  radius: 10, 
+                  color: 'rgba(0,0,255,0.5)', 
+                  inertia: 0.2,
+                  snapDistance: 30 //3
+                }, canvas );
+      dots.push( dot3 );
+
+      // create 4th (yellow) dot
+      var dot4 = new Dot();
+      dot4.init({ x: 20, 
+                  y: canvasHeight - 20,
+                  radius: 10, 
+                  color: 'rgba(255,255,0,0.5)', 
+                  inertia: 0.25,
+                  snapDistance: 50 //3
+                }, canvas );
+      dots.push( dot4 );
+
+      // kick off animation and interaction
       startDraw();
       window.onmousemove = mouseMove;
 
