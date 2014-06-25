@@ -10,6 +10,11 @@ canvas {
   margin: 20px auto;
   outline: 1px solid #ccc;
 }
+img {
+  display: block;
+  margin: 20px auto;
+  outline: 1px solid #ccc;
+}
 .reflections {
   width: 400px;
   margin: 20px auto;
