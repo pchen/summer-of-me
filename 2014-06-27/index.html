@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 7</title>
+  <link href="../styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <section class="experiment">
+    <p class="instructions">Move your mouse around in the box</p>
+    <canvas id="dot-holder" width="400" height="400"></canvas>
+    <script src="dot.js"></script>
+    <script>
+    (function(){
+      window.requestAnimationFrame = window.requestAnimationFrame
+                                      || window.mozRequestAnimationFrame
+                                      || window.webkitRequestAnimationFrame 
+                                      || window.msRequestAnimationFrame;
+
+      window.cancelAnimationFrame = window.cancelAnimationFrame
+                                      || window.mozCancelAnimationFrame
+                                      || window.webkitCancelAnimationFrame 
+                                      || window.msCancelAnimationFrame;
+
+      var canvas = document.getElementById('dot-holder'), 
+          ctx = canvas.getContext('2d'),
+          canvasWidth = canvas.width,
+          canvasHeight = canvas.height;
+
+      var mouse = { x:0, y:0 };
+
+      var animationId,
+          mouseDebounce,
+          fauxrate = 60, // kind of like framerate, but not
+          timer;
+
+      var dots = [],
+          dotsToMake = 20, 
+          minRadius = 5,
+          maxRadius = 35;
+      
+      function mouseMove(mouseevent) {
+
+        // get mouse position after HTML element offset
+        mouse.x = mouseevent.pageX - canvas.offsetLeft;
+        mouse.y = mouseevent.pageY - canvas.offsetTop;
+        
+        // set new target
+        for (var i=0; i<dots.length; i++) {
+          dots[i].setTargetXY( mouse.x, mouse.y );
+        }
+
+        clearTimeout(mouseDebounce);
+        mouseDebounce = setTimeout(draw, 16); //16 is the magic number where interaction doesn't seem laggy
+      }
+
+      function draw() {
+        
+        // control frame rate based on elapsed time
+        var elapsed = Date.now() - timer;
+        if (elapsed < fauxrate) {
+          animationId = requestAnimationFrame(draw);
+          return;
+        }
+        timer = Date.now(); // reset timer
+
+        // draw canvas
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        var targetReached = 0,
+            i = 0;
+        
+        for (i=0; i<dots.length; i++){
+          var stopDrawing = dots[i].draw(ctx);
+          if ( stopDrawing ) {
+            targetReached++;
+          }
+        }
+        
+        // keep drawing?
+        if ( targetReached === dots.length ) {
+          cancelAnimationFrame(animationId);
+        }
+        else {
+          animationId = requestAnimationFrame(draw);
+        }
+      }
+
+      function getRandomWholeNumber(min, max) {
+        return Math.floor( Math.random() * (max-min+1) + min );
+      }
+
+      for (var i=0; i<dotsToMake; i++){
+
+        var r = getRandomWholeNumber(0, 255),
+            g = 50,
+            b = 100,
+            a = 0.5,
+            color = 'rgba('+r+','+g+','+b+','+a+')';
+        
+        var radius = getRandomWholeNumber(minRadius, maxRadius),
+            inertia = (Math.max(40,maxRadius)-radius)/100 + 0.01, // bigger circles are slower
+            snapDistance = radius + 1;
+
+        var dot = new Dot();
+        dot.init({ x: canvasWidth/2, 
+                   y: canvasHeight/2,
+                   radius: radius, 
+                   color: color, 
+                   inertia: inertia,
+                   snapDistance: snapDistance
+                  }, canvas );
+
+        dots.push( dot );
+
+      }
+      
+      // kick off animation and interaction
+      timer = Date.now();
+      draw();
+      window.onmousemove = mouseMove;
+
+    }());
+    </script>
+  </section>
+  <section class="reflections">
+    <h2>Day 7</h2>
+    <p>It's some sort of JavaScript worm... I don't know what to say about that.</p>
+    <p>After <a href="../2014-06-23/">Day 3</a>'s experiment, <a href="https://twitter.com/_seabastion">@_seabastion</a> suggested using Date.now() to get rid of the setTimeout(). Kudos for the tip!</p>
+    <p>- Pearl</p>
+  </section>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-246174-1', 'karma-laboratory.com');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
