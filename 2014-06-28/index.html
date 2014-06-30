@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 8</title>
+  <link href="../styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <section class="experiment">
+    <p class="instructions">Refresh the browser to enjoy a new mountain view</p>
+    <canvas id="landscape" width="400" height="400"></canvas>
+    <script>
+    (function(){
+      
+      var canvas = document.getElementById('landscape'), 
+          ctx = canvas.getContext('2d'),
+          canvasWidth = canvas.width,
+          canvasHeight = canvas.height;
+
+      var mountainsToMake = 3;
+
+      function getRandomWholeNumber(min, max) {
+        return Math.floor( Math.random() * (max-min+1) + min );
+      }
+
+      function drawSky() {
+        ctx.rect(0, 0, canvasWidth, canvasHeight);
+
+        var gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight/3);
+        gradient.addColorStop(0, '#81bbe8');
+        gradient.addColorStop(1, '#c4dff1');   
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+
+      function drawMountain(startY, color) {
+
+        var peaks = getRandomWholeNumber(1, 2);
+        var maxMountainWidth = Math.ceil( canvasWidth / peaks ),
+            peakMidway = maxMountainWidth/2;
+
+        var x = 0,
+            y = startY;
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+
+        for (var i=0; i<peaks; i++) {
+
+          var startX = x,
+              startY = y;
+
+          var midX = startX + getRandomWholeNumber(peakMidway-50, peakMidway+50),
+              midY = startY - getRandomWholeNumber(50, 100);
+          
+          var x = maxMountainWidth * (i+1),
+              y = startY + getRandomWholeNumber(-30, 30);
+
+          ctx.lineTo(startX, startY);
+          ctx.lineTo(midX, midY);
+          ctx.lineTo(x, y);
+          ctx.lineTo(x, canvasHeight);
+          ctx.lineTo(startX, canvasHeight);
+          ctx.lineTo(startX, startY);
+
+          ctx.moveTo(x, y);
+        }
+        
+        ctx.fill();
+        
+      }
+
+      drawSky();
+      for (var i=0; i<mountainsToMake; i++){
+        var y = canvasHeight/2 + (i * 50);
+        drawMountain(y, 'rgba(108, 125, 133, 0.5)');
+      }
+      
+
+    }());
+    </script>
+  </section>
+  <section class="reflections">
+    <h2>Day 8</h2>
+    <p>In honour of being in Colorado, some HTML5 canvas mountains.</p>
+    <p>- Pearl</p>
+  </section>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-246174-1', 'karma-laboratory.com');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
