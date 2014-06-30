@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Day 8</title>
+  <title>Day 8 &amp; 9</title>
   <link href="../styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
   <section class="experiment">
     <p class="instructions">Refresh the browser to enjoy a new mountain view</p>
-    <canvas id="landscape" width="400" height="400"></canvas>
+    <canvas id="landscape" width="600" height="400"></canvas>
     <script>
     (function(){
       
@@ -18,18 +18,20 @@
           canvasWidth = canvas.width,
           canvasHeight = canvas.height;
 
-      var mountainsToMake = 3;
+      var mountainColors = ['rgba(160,186,194,0.8)', '#90a8b0', '#859ba4', '#7d929b']; // lighter to darker
+      var mountainsToMake = getRandomWholeNumber(1, mountainColors.length);
 
       function getRandomWholeNumber(min, max) {
         return Math.floor( Math.random() * (max-min+1) + min );
       }
 
       function drawSky() {
-        ctx.rect(0, 0, canvasWidth, canvasHeight);
 
         var gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight/3);
-        gradient.addColorStop(0, '#81bbe8');
-        gradient.addColorStop(1, '#c4dff1');   
+        gradient.addColorStop(0, '#3b85b1'); // deep blue
+        gradient.addColorStop(1, '#b7d4db'); // light blue   
+        
+        ctx.rect(0, 0, canvasWidth, canvasHeight);
         ctx.fillStyle = gradient;
         ctx.fill();
       }
@@ -73,18 +75,18 @@
       }
 
       drawSky();
-      for (var i=0; i<mountainsToMake; i++){
-        var y = canvasHeight/2 + (i * 50);
-        drawMountain(y, 'rgba(108, 125, 133, 0.5)');
+      for (var i=0; i<mountainsToMake; i++) {
+        var depthIncrement = getRandomWholeNumber(i*50-25, i*50+25);
+        var y = canvasHeight/2 + depthIncrement;
+        drawMountain(y, mountainColors[i]);
       }
-      
 
     }());
     </script>
   </section>
   <section class="reflections">
-    <h2>Day 8</h2>
-    <p>In honour of being in Colorado, some HTML5 canvas mountains.</p>
+    <h2>Day 8 &amp; 9</h2>
+    <p>I'm in Colorado for fun. The views are amazing.</p>
     <p>- Pearl</p>
   </section>
   <script>
