@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 10</title>
+  <link href="../styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <section class="experiment">
+    <p class="instructions">Use the left/right arrow key to move.</p>
+    <canvas id="boulder-creek" width="400" height="400"></canvas>
+    <script src="InnerTube.js"></script>
+    <script>
+    (function(){
+      
+      window.requestAnimationFrame = window.requestAnimationFrame
+                                      || window.mozRequestAnimationFrame
+                                      || window.webkitRequestAnimationFrame 
+                                      || window.msRequestAnimationFrame;
+
+      window.cancelAnimationFrame = window.cancelAnimationFrame
+                                      || window.mozCancelAnimationFrame
+                                      || window.webkitCancelAnimationFrame 
+                                      || window.msCancelAnimationFrame;
+
+      var canvas = document.getElementById('boulder-creek'), 
+          ctx = canvas.getContext('2d'),
+          canvasWidth = canvas.width,
+          canvasHeight = canvas.height;
+
+      var animationId,
+          keyboardDebounce,
+          fauxrate = 60, // kind of like framerate, but not
+          timer;
+
+      var tube;
+
+      function getRandomWholeNumber(min, max) {
+        return Math.floor( Math.random() * (max-min+1) + min );
+      }
+
+      function drawRiver() {
+
+      }
+
+      function addInnerTube() {
+
+      }
+
+      function addBoulder() {
+        
+      }
+
+      function draw() {
+
+        // control frame rate based on elapsed time
+        var elapsed = Date.now() - timer;
+        if (elapsed < fauxrate) {
+          animationId = requestAnimationFrame(draw);
+          return;
+        }
+        timer = Date.now(); // reset timer
+
+        // draw canvas
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        var stopDrawing = tube.draw(ctx);
+
+        // keep drawing?
+        if ( stopDrawing  ) {
+          cancelAnimationFrame(animationId);
+        }
+        else {
+          animationId = requestAnimationFrame(draw);
+        }
+
+      }
+
+      tube = new InnerTube();
+      // tube.init({x:50, y:350});
+
+      draw();
+
+    }());
+    </script>
+  </section>
+  <section class="reflections">
+    <h2>Day 10</h2>
+    <p>Today I went <a href="http://whitewatertubing.com/river-information/where-to-go-tubing/boulder-creek/">inner tubing in Boulder Creek</a>. There were parts of it where I thought I was going to die (not really) but survived with only some bruised knees and toes.</p>
+    <p>Protip: Do <strong>not</strong> attempt this while wearing flip flops. 
+    <p>- Pearl</p>
+  </section>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-246174-1', 'karma-laboratory.com');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
