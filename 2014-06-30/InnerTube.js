@@ -31,31 +31,46 @@ var InnerTube = (function() {
 
   return {
 
-    init: function(dotSettings, canvas) {
-      _tube = dotSettings;
-      _max.x = canvas.width + dotSettings.radius / 2;
-      _max.y = 350; //canvas.height + dotSettings.radius / 2;
-      this.setTargetX(dotSettings.x);
+    init: function(settings, canvas) {
+      // _tube = settings;
+      _tube.x = settings.x;
+      _tube.y = settings.y;
+
+      _max.x = canvas.width + _tube.radius / 2;
+      _max.y = 350; //canvas.height + settings.radius / 2;
+
+      this.setTargetXY(settings.x, settings.y);
+    },
+
+    move: function(x,y) {
+      var x = _tube.x + x || _tube.x,
+          y = _tube.y + y || _tube.y;
+
+      this.setTargetXY(x,y);
     },
 
     // when setting target, constraint to canvas dimensions
-    setTargetX: function(x) {
+    setTargetXY: function(x, y) {
       _target.x = Math.max(0, Math.min(_max.x, x));
+      _target.y = Math.max(0, Math.min(_max.y, y));
     },
 
     draw: function(ctx) {
 
-      var deltaX = _target.x - _tube.x;
+      var deltaX = _target.x - _tube.x,
+          deltaY = _target.y - _tube.y;
 
-      var stopDrawing = ( Math.abs(deltaX) <= _tube.snapDistance );
+      var stopDrawing = ( Math.abs(deltaX) <= _tube.snapDistance 
+                          && Math.abs(deltaY) <= _tube.snapDistance );
 
       if ( !stopDrawing ) {
         _tube.x += deltaX * _tube.inertia;
+        _tube.y += deltaY * _tube.inertia;
       }
 
       _drawCircle(ctx);
 
-      return stopDrawing;
+      return false; //stopDrawing;
     }
     
   }

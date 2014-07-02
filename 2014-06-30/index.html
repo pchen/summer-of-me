@@ -52,6 +52,22 @@
         
       }
 
+      function onKeyEvent(event) {
+        var key = event.keyCode || event.which;
+        if (key === KEY_LEFT || key === KEY_RIGHT || key === KEY_UP || key === KEY_DOWN) {
+          move(key);
+        }
+      }
+
+      function move(key) {
+        if (key === KEY_LEFT) {
+          tube.move(-10,0);
+        }
+        else if( key === KEY_RIGHT) {
+          tube.move(10,0);
+        }
+      }
+
       function draw() {
 
         // control frame rate based on elapsed time
@@ -78,10 +94,16 @@
 
       }
 
+      var KEY_LEFT = 37,
+          KEY_RIGHT = 39,
+          KEY_UP = 38,
+          KEY_DOWN = 40; 
+
       tube = new InnerTube();
-      // tube.init({x:50, y:350});
+      tube.init({x:50, y:350}, canvas);
 
       draw();
+      window.addEventListener('keyup', onKeyEvent);
 
     }());
     </script>
