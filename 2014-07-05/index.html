@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 15 &amp; 16</title>
+  <link href="../styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <section class="experiment">
+    <img src="arduino-wifi-web-server-thumb.png" width="400">
+  </section>
+  <section class="reflections">
+    <h2>Day 15 &amp; 16</h2>
+    <p>I've been playing around with the <a href="http://www.intel.com/content/www/us/en/do-it-yourself/galileo-maker-quark-board.html">Intel Galileo</a> with the intention of controlling electronics via my phone.</p>
+    <p>The Galileo is an Arduino that runs off of a special Linux distro, kind of like the <a href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN">Arduino Yún</a> &mdash; but not exactly. So you can have the Galileo run a web server and visit it from your laptop web browser. Via the embedded web server, you can then control the pins on the Arduino (e.g. to turn LEDs on and off, spin motors, or gather sensor data).</p>
+    <p>A basic 'hello world' prototype should have been a relatively simple thing to cobble together with existing Arduino sketches but two things tripped me up:</p>
+    
+    <h3>1. Use CU, not TTY</h3>
+    <p>If you've done Arduino programming on a Mac before, you probably have it ingrained in your head to choose <em>/dev/tty.usbmodemXXXXXX</em> from the <strong>Tools &gt; Serial Port</strong> drop down.</p>
+    <p>However, if you're using the Galileo, it uses <em>/dev/<strong>cu</strong>.usbmodem</em> not <em>/dev/<strong>tty</strong>.usbmodem</em>.</p>
+    <p>So if you're wondering why your sketch is taking so long to upload to the board, or why you're beach balling while trying to update the Galileo firmware, double check that <em><strong>cu</strong>.usbmodem</em> is selected.</p>
+    <p><img src="choose-cu.usbmodem-not-tty.png" width="400" alt="Choose cu.usbmodem, not tty"></p>
+
+    <h3>Bonus Tip: Confirm the USB connection</h3>
+    <p>If you're wondering if your computer is detecting the Galileo at all (for example, when you don't see any <em>usbmodem</em> devices listed under <strong>Tools &gt; Serial Port</strong>), open up OS X's <em>System Information</em>.</p>
+    <p>Use Spotlight to open <em>System Information</em>. Or from the top Mac menu, choose <strong>Apple icon &gt; About this Mac</strong>. Click <strong>More info</strong>. Click <strong>System Report</strong>. Then choose <strong>Hardware &gt; USB</strong>.
+    <p><a href="mac-system-information-usb.png"><img src="mac-system-information-usb.png" width="400" alt="USB in System Information"></a></p>
+    <p>If your computer sees the Galileo, an item called <strong>Gadget Serial</strong> will show up.</p>
+    <p>Note: Unlike Window's <em>Device Manager</em>, this panel does not automatically refresh when devices get plugged in or unplugged so use <strong>Cmd+R</strong> to periodically refresh the list.</p>
+
+    <h3>2. Use WPA, not WPA2</h3>
+    <p>The next hurdle I hit was an inability of my Gailieo to connect to my home's wifi network.</p>
+    <p>I could see it using the <strong>File &gt; Examples &gt; WiFi &gt; ScanNetworks</strong> sketch:<p>
+    <p><a href="arduino-wifi-scan.png"><img src="arduino-wifi-scan.png" width="400"></a></p>
+    <p>But I just couldn't connect to it using the <strong>File &gt; Examples &gt; WiFi &gt; ConnectWithWPA</strong> sketch:</p>
+    <p><a href="arduino-wifi-not-connecting.png"><img src="arduino-wifi-not-connecting.png" width="400"></a></p>
+    <p>I guessed that my connection issue was due to my home network using WPA2 but a comment in the example code made it sound like it should be okay:</p>
+<pre>
+// Connect to WPA/WPA2 network:    
+status = WiFi.begin(ssid, pass);
+</pre>
+    <p>At this point, it was late so I went to bed. Today, with fresh eyes, I set up a guest wifi account with my Airport router and used WPA/WPA2:</p>
+    <p><a href="airport-set-up-guest-network.png"><img src="airport-set-up-guest-network.png" width="400"></a></p>
+    <p>So now, if my laptop is on the same wifi network, I can visit http://172.16.42.3/ and control the on-board LED via my browser!</p>
+    <p><a href="arduino-wifi-web-server.png"><img src="arduino-wifi-web-server.png" width="400"></a></p>
+    <p>Light turns on. Light turns off. Light turns...</p>
+    <p>- Pearl</p>
+  </section>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-246174-1', 'karma-laboratory.com');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
