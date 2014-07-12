@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 21 - Inner Tube game</title>
+  <link href="../styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <section class="experiment">
+    <!-- The canvas for the panning background -->
+    <canvas id="background" width="600" height="360">
+      Your browser does not support canvas. Please try again with a different browser.
+    </canvas>
+  </section>
+  <section class="reflections">
+    <h2>Day 21</h2>
+    <p>Based on <a href="http://blog.sklambert.com/galaxian-html5-game/">this extensive JS game tutorial</a>, I was hoping to finish the scrolling background on my inner tubing game but illustrating the complexities of river water was harder than I thought it would be. So enjoy the stars for now.</p>
+    <p>Instead, I got nitpicky with how the JavaScript was organized in the original tutorial (e.g. lots of tightly coupled classes that accessed global variables) so I instead spent some time refactoring code. My version <a href="https://github.com/pchen/summer-of-me/tree/master/2014-07-11">here</a>.</p>
+    <p>Funny how I perceive writing code to be easier than drawing waves.</p>
+    <p>-Pearl</p>
+  </section>
+  <section id="bg">
+  </section>
+  <script src="js/requestAnimationFrame.js"></script>
+  <script src="js/Drawable.js"></script>
+  <script src="js/Background.js"></script>
+  <script src="js/Game.js"></script>
+  <script>
+    (function(){
+      var canvasIsSupported = !!document.createElement('canvas').getContext;
+      if (canvasIsSupported) {
+
+        // Define an object to load all images so they are created only once
+        var imageRepository = new function() {
+          // background tile
+          this.background = document.createElement('img');
+          this.background.src = 'img/stars.png';
+        }
+
+        // get references to canvas elements
+        var bgCanvas = document.getElementById('background'),
+            bgContext = bgCanvas.getContext('2d');
+
+        // wait for images defined in imageRepository to load
+        // then create and start game
+        window.addEventListener('load', function windowLoaded() {
+
+          // create and start the game
+          var game = new Game();
+          game.init(imageRepository, bgCanvas, bgContext);
+        
+        });
+
+      }
+    }());
+  </script>
+</body>
+</html>
