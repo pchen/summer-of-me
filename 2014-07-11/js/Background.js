@@ -3,26 +3,43 @@
  * the Drawable object. The background is drawn on the "background"
  * canvas and creates the illusion of moving by panning the image.
  */
-var Background = function(img) {
 
-  this.speed = 1;
+(function (window) {
+  'use strict';
 
-  this.draw = function() {
+  function Background(img, canvas) {
 
-    // Draw two instances of the background, one on top of first image
-    // since original image is only the height of the canvas 
-    this.context.drawImage(img, this.x, this.y);
-    this.context.drawImage(img, this.x, this.y - this.canvasHeight);
-    
-    // If the image scrolled off the screen, reset
-    // Pan background
-    this.y += this.speed;
-    if (this.y > this.canvasHeight) {
-      this.y = 0;
-    }
+    this.speed = 1;
+
+    // overrides 
+    this.context = canvas.getContext('2d');
+    this.canvasWidth = canvas.width;
+    this.canvasHeight = canvas.height;
+
+    this.draw = function() {
+
+      // Draw two instances of the background, one on top of first image
+      // since original image is only the height of the canvas 
+      this.context.drawImage(img, this.x, this.y);
+      this.context.drawImage(img, this.x, this.y - this.canvasHeight);
+      
+      // If the image scrolled off the screen, reset
+      // Pan background
+      this.y += this.speed;
+      if (this.y > this.canvasHeight) {
+        this.y = 0;
+      }
+    };
+
+    this.init(0,0);
+
   };
 
-};
+  // Set Background to inherit properties from Drawable
+  Background.prototype = new app.Drawable();
 
-// Set Background to inherit properties from Drawable
-Background.prototype = new Drawable();
+  // Export to window
+  window.app = window.app || {};
+  window.app.Background = Background;
+
+}(window));

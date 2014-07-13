@@ -28,6 +28,8 @@
   <script src="js/Game.js"></script>
   <script>
     (function(){
+      'use strict';
+
       var canvasIsSupported = !!document.createElement('canvas').getContext;
       if (canvasIsSupported) {
 
@@ -38,17 +40,15 @@
           this.background.src = 'img/stars.png';
         }
 
-        // get references to canvas elements
-        var bgCanvas = document.getElementById('background'),
-            bgContext = bgCanvas.getContext('2d');
-
         // wait for images defined in imageRepository to load
         // then create and start game
         window.addEventListener('load', function windowLoaded() {
 
+          // get references to canvas elements
+          var bgCanvas = document.getElementById('background');
+
           // create and start the game
-          var game = new Game();
-          game.init(imageRepository, bgCanvas, bgContext);
+          var game = new app.Game(imageRepository, bgCanvas);
         
         });
 
